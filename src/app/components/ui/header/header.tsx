@@ -1,31 +1,41 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+
+import { useAuth } from '../../../hooks/useAuth';
+import { checkAuth } from '../../../store/slices/auth-slice';
+import { useAppDispatch } from '../../../store';
 
 import AppBar from '@mui/material/AppBar';
-// import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-// import Button from '@mui/material/Button';
-// import IconButton from '@mui/material/IconButton';
-// import MenuIcon from '@mui/icons-material/Menu';
+import Button from '@mui/material/Button';
 
 const Header: FC = () => {
+  const dispatch = useAppDispatch();
+  const userIsAuth = useAuth();
+
+  useEffect(() => {
+    const token = localStorage.getItem('secretToken');
+    if (token) {
+      dispatch(checkAuth(token));
+    }
+  }, [dispatch]);
+
+  const logOut = (): void => {
+    localStorage.removeItem('secretToken');
+  };
+
   return (
     <div className="header">
       <AppBar position="static" color="primary">
         <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton> */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Тестовое задание
           </Typography>
-          {/* <Button color="inherit">Login</Button> */}
+          {userIsAuth && (
+            <Button color="inherit" onClick={() => logOut()}>
+              Выйти
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </div>

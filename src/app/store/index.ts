@@ -1,7 +1,13 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 
-const rootReducer = combineReducers({});
+import tableData from './slices/table-data-slice';
+import authData from './slices/auth-slice';
+
+const rootReducer = combineReducers({
+  tableData: tableData,
+  authData: authData,
+});
 
 const store = configureStore({
   reducer: rootReducer,
