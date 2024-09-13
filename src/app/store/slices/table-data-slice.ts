@@ -6,9 +6,14 @@ import {
   IReqestedDataTable,
 } from '../../types/data-slice-types';
 import { AppDispatch } from '../index';
+import { changeLoadingStatus } from './auth-slice';
 
 const initialState: ITableItems = {
   tableItems: [],
+  error: {
+    errorCode: '',
+    errorMessage: '',
+  },
 };
 
 const tableData = createSlice({
@@ -26,6 +31,7 @@ const tableData = createSlice({
 export const getAllEntries = () => {
   return async (dispatch: AppDispatch): Promise<void> => {
     try {
+      dispatch(changeLoadingStatus(true));
       await fetch(
         `${import.meta.env.VITE_BASE_URL}${import.meta.env.VITE_GET_ENTRIES}`,
         {
@@ -35,13 +41,15 @@ export const getAllEntries = () => {
           },
         }
       ).then((resp) =>
-        resp
-          .json()
-          .then((data: IReqestedDataTable) => dispatch(dataReceived(data.data)))
+        resp.json().then((data: IReqestedDataTable) => {
+          dispatch(dataReceived(data.data));
+          console.log(data.data);
+        })
       );
     } catch (error) {
       console.error(error);
     }
+    dispatch(changeLoadingStatus(false));
   };
 };
 

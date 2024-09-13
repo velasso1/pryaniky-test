@@ -22,6 +22,7 @@ const authData = createSlice({
       state.token = action.payload;
       state.error = false;
       state.loading = false;
+      state.authorized = !!action.payload;
     },
     changeLoadingStatus(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
@@ -30,9 +31,15 @@ const authData = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    checkAuth(state, action: PayloadAction<string>) {
-      state.token = action.payload;
-      state.authorized = !!action.payload;
+    checkAuth(state) {
+      const token = localStorage.getItem('secretToken');
+      state.token = token ? token : '';
+      state.authorized = token ? true : false;
+    },
+    userLogOut(state) {
+      state.authorized = false;
+      state.token = '';
+      localStorage.removeItem('secretToken');
     },
   },
 });
@@ -65,6 +72,11 @@ export const authUser = (body: IBodyRequest) => {
   };
 };
 
-export const { tokenReceived, changeLoadingStatus, requestFailed, checkAuth } =
-  authData.actions;
+export const {
+  tokenReceived,
+  changeLoadingStatus,
+  requestFailed,
+  checkAuth,
+  userLogOut,
+} = authData.actions;
 export default authData.reducer;

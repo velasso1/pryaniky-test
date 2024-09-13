@@ -1,8 +1,7 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
-import { useAuth } from '../../../hooks/useAuth';
-import { checkAuth } from '../../../store/slices/auth-slice';
-import { useAppDispatch } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { userLogOut } from '../../../store/slices/auth-slice';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,18 +10,7 @@ import Button from '@mui/material/Button';
 
 const Header: FC = () => {
   const dispatch = useAppDispatch();
-  const userIsAuth = useAuth();
-
-  useEffect(() => {
-    const token = localStorage.getItem('secretToken');
-    if (token) {
-      dispatch(checkAuth(token));
-    }
-  }, [dispatch]);
-
-  const logOut = (): void => {
-    localStorage.removeItem('secretToken');
-  };
+  const { authorized } = useAppSelector((state) => state.authData);
 
   return (
     <div className="header">
@@ -31,8 +19,8 @@ const Header: FC = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Тестовое задание
           </Typography>
-          {userIsAuth && (
-            <Button color="inherit" onClick={() => logOut()}>
+          {authorized && (
+            <Button color="inherit" onClick={() => dispatch(userLogOut())}>
               Выйти
             </Button>
           )}

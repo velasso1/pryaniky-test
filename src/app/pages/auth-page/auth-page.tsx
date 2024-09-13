@@ -1,31 +1,29 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authUser } from '../../store/slices/auth-slice';
 import { IBodyRequest } from '../../types/auth-slice-types';
-import { useAuth } from '../../hooks/useAuth';
 
-import { Alert } from '@mui/material';
-import { Box, Paper, Button, TextField, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Paper,
+  Button,
+  TextField,
+  Typography,
+  Alert,
+} from '@mui/material';
+import { Loader } from '../../components/ui/loader';
 
 const AuthPage: FC = () => {
   const dispatch = useAppDispatch();
-  const userIsAuth = useAuth();
-  const navigate = useNavigate();
 
   const { loading, error } = useAppSelector((state) => state.authData);
 
   const [fieldEmpty, setFieldEmpty] = useState<boolean>(false);
-
   const [userData, setUserData] = useState<IBodyRequest>({
     username: '',
     password: '',
   });
-
-  useEffect(() => {
-    if (userIsAuth) navigate('/');
-  }, [userIsAuth, navigate]);
 
   const logIn = (body: IBodyRequest) => {
     if (userData.password.length > 0 && userData.username.length > 0) {
@@ -38,13 +36,20 @@ const AuthPage: FC = () => {
 
   return (
     <>
-      <Box sx={{ width: '400px', margin: '0 auto', marginTop: '25vh' }}>
+      <Box
+        sx={{
+          width: '400px',
+          margin: '0 auto',
+          marginTop: '25vh',
+        }}
+      >
         <Paper
           sx={{
             display: 'flex',
             flexDirection: 'column',
             textAlign: 'center',
             padding: '30px 40px',
+            position: 'relative',
           }}
         >
           <Typography sx={{ marginBottom: '10px', fontSize: '20px' }}>
@@ -110,6 +115,7 @@ const AuthPage: FC = () => {
               Проверьте правильность ввода <br /> логина и пароля
             </Alert>
           )}
+          {loading && <Loader />}
         </Paper>
       </Box>
     </>

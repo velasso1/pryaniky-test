@@ -1,4 +1,5 @@
 export interface ITableData {
+  id: string;
   companySigDate: string;
   companySignatureName: string;
   documentName: string;
@@ -9,8 +10,14 @@ export interface ITableData {
   employeeSignatureName: string;
 }
 
+export interface IError {
+  errorCode: string;
+  errorMessage: string;
+}
+
 export interface ITableItems {
   tableItems: ITableData[];
+  error: IError;
 }
 
 export interface IReqestedDataTable {
